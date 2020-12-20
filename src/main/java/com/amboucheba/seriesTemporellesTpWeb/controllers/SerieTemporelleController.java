@@ -49,14 +49,15 @@ public class SerieTemporelleController {
             @Valid @RequestBody SerieTemporelle newSerieTemporelle,
             @PathVariable long userId,
             @AuthenticationPrincipal AuthDetails userDetails){
-        long createdSerieTemporelleId = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId, userDetails.getUserId()).getId();
+        SerieTemporelle s = serieTemporelleService.createSerieTemporelle(newSerieTemporelle, userId, userDetails.getUserId());
+        long createdSerieTemporelleId = s.getId();
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .pathSegment("seriesTemporelles", "{id}")
                 .buildAndExpand(createdSerieTemporelleId)
                 .toUri();
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(s);
     }
 
     @GetMapping(
